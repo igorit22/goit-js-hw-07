@@ -1,6 +1,8 @@
-import { galleryItems } from './gallery-items.js';
+import { galleryItems } from "./gallery-items.js";
 
-const galleryContainer = document.querySelector('.gallery');
+const galleryContainer = document.querySelector(".gallery");
+
+// Функція для створення HTML-розмітки карточки зображення галереї
 
 const createGalleryItem = ({ preview, original, description }) =>
   `<li class="gallery__item">
@@ -9,12 +11,15 @@ const createGalleryItem = ({ preview, original, description }) =>
      </a>
    </li>`;
 
-const galleryMarkup = galleryItems.map(createGalleryItem).join('');
+// Генеруємо HTML-розмітку для кожного елемента масиву галереї та вставляємо її в контейнер галереї
 
-galleryContainer.insertAdjacentHTML('beforeend', galleryMarkup);
+const galleryMarkup = galleryItems.map(createGalleryItem).join("");
 
-// initialize SimpleLightbox
-const lightbox = new SimpleLightbox('.gallery a', {
-  captionsData: 'alt',
+galleryContainer.insertAdjacentHTML("beforeend", galleryMarkup);
+
+// Ініціалізація бібліотеки SimpleLightbox для елементів з посиланнями на зображення
+
+const lightbox = new SimpleLightbox(".gallery a", {
+  captionsData: "alt",
   captionDelay: 250,
 });
