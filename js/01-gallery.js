@@ -27,8 +27,8 @@ galleryContainer.insertAdjacentHTML('beforeend', galleryMarkup);
 galleryContainer.addEventListener('click', (event) => {
   event.preventDefault();
 
-  // Перевіряємо, чи був натиснутий елемент з класом 'gallery__image'
-  const isGalleryImageEl = event.target.classList.contains('gallery__image');
+  // Перевіряємо, чи був натиснутий елемент з тегом 'img'
+  const isGalleryImageEl = event.target.nodeName === 'IMG';
 
   if (!isGalleryImageEl) {
     return;
@@ -42,18 +42,32 @@ galleryContainer.addEventListener('click', (event) => {
   const instance = basicLightbox.create(
     `
       <img src="${galleryImageSrc}" alt="${galleryImageAlt}">
-    `
+    `,
+    {
+      onShow: (instance) => {
+        console.log('onShow', instance);
+        window.addEventListener('keydown', (event) => onEscKeyPress(event, instance));
+      },
+      onClose: (instance) => {
+        console.log('onClose', instance);
+        window.removeEventListener('keydown', (event) => onEscKeyPress(event, instance));
+      },
+    }
   );
 
   instance.show();
 
-  // Додаємо обробник події на клавішу 'Escape' для закриття модального вікна
-  function onEscKeyPress(event) {
-    if (event.code === 'Escape') {
-      instance.close();
-      window.removeEventListener('keydown', onEscKeyPress);
-    }
-  }
-
-  window.addEventListener('keydown', onEscKeyPress);
+  // Додаємо слухачів подій
+  window.addEventListener('keydown', (event) => onEscKeyPress(event, instance));
+  instance.element().addEventListener('click', () => {
+    instance.close();
+    window.removeEventListener('keydown', (event) => onEscKeyPress(event, instance));
+  });
 });
+
+// Додаємо обробник події на клавішу 'Escape' для закриття модального вікна
+function onEscKeyPress(event, instance) {
+  if (event.code === 'Escape') {
+    instance.close();
+  }
+}
